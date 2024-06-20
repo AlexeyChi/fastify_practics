@@ -1,0 +1,15 @@
+{
+  "name": "fastify_practics",
+  "version": "1.0.0",
+  "description": "first practics",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "AlexeyChi",
+  "license": "ISC",
+  "dependencies": {
+    "fastify": "^4.28.0"
+  }
+}
