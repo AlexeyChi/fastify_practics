@@ -1,0 +1,24 @@
+extends ../layouts/page.pug
+
+block content
+    .card.shadow-sm
+    .card-body.p-4.my-5
+      form(action= '/courses' method= 'get')
+        .row
+          .col-12.col-md
+            .mb-3
+              label.form-label(for= 'filterTitle') Название курса
+              input.form-control(id= 'filterTitle' name= 'term' value= term)
+            input(class='btn btn-primary' type='submit' value= 'Поиск')
+            table.table.table-hover.table-striped.my-5
+                tr
+                  th Id курса
+                  th Название
+                  th Описание
+                each course in courses
+                  tr
+                    td
+                      a.link-info.link-underline-opacity-0.link-underline-opacity-100-hover.link-dark.text-align-center(href=`courses/${course.id}`)= course.id
+                    td
+                      a.link-info.link-underline-opacity-0.link-underline-opacity-100-hover.link-dark(href=`courses/${course.id}`)= course.title
+                    td= course.description
