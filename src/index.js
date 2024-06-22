@@ -1,17 +1,32 @@
 import fastify from 'fastify';
+import pug from 'pug';
+import view from '@fastify/view';
 
 const app = fastify();
 const port = 3000;
 
-app.get('/', (req, res) => {
-    const user = req.query.name;
+await app.register(view, { engine: { pug } });
+const state = {
+    courses: [
+      {
+        id: 1,
+        title: 'JS: Массивы',
+        description: 'Курс про массивы в JavaScript',
+      },
+      {
+        id: 2,
+        title: 'JS: Функции',
+        description: 'Курс про функции в JavaScript',
+      },
+      {
+        id: 3,
+        title: 'Fastify',
+        description: 'Курс по фреймворку Fastify'
+      },
+    ],
+  };
 
-    if (!user) {
-        res.send('Hello World!');
-    } else {
-        res.send(`Hello ${user}`);
-    }
-});
+app.get('/', (req, res) => res.view('src/views/index'));
 
 app.get('/users', (req, res) => {
     res.send('GET /users');
@@ -26,11 +41,28 @@ app.get('/users:id', (req, res) => {
 });
 
 app.get('/users:id/post/posts:postId', (req, res) => {
-    res.send(`User ID: ${req.params.id}, Post ID: ${res.params.postId}`);
+    res.send(`User ID: ${req.params.id}, Post ID: ${req.params.postId}`);
+});
+
+app.get('/courses', (req, res) => {
+    const { term } = req.query;
+    let currentCurses = state.courses;
+
+    if (term) {
+        currentCurses = state.courses.filter(({ title, description }) => (
+            title.toLowerCase().includes(term.toLowerCase()) || description.toLowerCase().includes(term.toLowerCase())
+        ));
+    }
+
+    const data = { term, courses: currentCurses };
+
+    res.view('src/views/courses/index.pug', data);
+
 });
 
 app.get('/courses/:id', (req, res) => {
-    res.send(`Course ID: ${req.params.id}`);
+    const course = state.courses.find(({id}) => id === Number(req.params.id));
+    res.view('src/views/courses/show.pug', { course });
 });
 
 
