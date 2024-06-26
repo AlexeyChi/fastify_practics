@@ -1,0 +1,24 @@
+extends ../layouts/page.pug
+
+block header
+  h2.mt-3.px-3.font-monospace Add new user
+block content
+  .container
+    .row
+      .col-12.col-md
+        .card.my-4
+          .card-body
+            form(action = '/users' method = 'post')
+                  .mb-3
+                    label.form-label(for="username") Name:
+                    input.form-control(type = 'text', name = 'username', id = 'username', required = true)
+                  .mb-3
+                    label.form-label(for="email") Email:
+                    input.form-control(type = 'email', name = 'email', placeholder = 'your.email@gmail.com', id = 'email', required = true)
+                  .mb-3
+                    label.form-label(for="password") Password:
+                    input.form-control(type = 'password', name = 'password', id = 'password', required = true)
+                  .mb-3
+                    label.form-label(for="confirmPassword") confirmPassword:
+                    input.form-control(type = 'password', name = 'confirmPassword', id = 'confirmPassword',, required = true)
+                  button.btn.btn-primary(type="submit") Add 
