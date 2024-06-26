@@ -10,6 +10,7 @@
   "author": "AlexeyChi",
   "license": "ISC",
   "dependencies": {
+    "@fastify/formbody": "^7.4.0",
     "@fastify/view": "^9.1.0",
     "fastify": "^4.28.0",
     "pug": "^3.0.3"
