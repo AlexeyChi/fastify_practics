@@ -1,0 +1,18 @@
+extends ../layouts/page.pug
+
+block header
+  h2.mt-3.px-3.font-monospace Add new course
+block content
+    .container
+    .row
+      .col-12.col-md
+        .card.my-4
+          .card-body
+            form(action = '/courses' method = 'post')
+                  .mb-3
+                    label.form-label(for="title") Title:
+                    input.form-control(type = 'text', name = 'title', id = 'title', required = true)
+                  .mb-3
+                    label.form-label(for="description") Description:
+                    textarea.form-control(type = 'text', name = 'description', id = 'description', required = true)
+                  button.btn.btn-primary(type="submit") Add 
