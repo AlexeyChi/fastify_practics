@@ -3,6 +3,8 @@ import pug from 'pug';
 import view from '@fastify/view';
 import formbody from '@fastify/formbody';
 
+import { crypto, genereateId } from './utils.js';
+
 const app = fastify();
 const port = 3000;
 
@@ -12,17 +14,17 @@ await app.register(formbody);
 const state = {
   courses: [
     {
-      id: 1,
+      id: '1',
       title: 'JS: Массивы',
       description: 'Курс про массивы в JavaScript',
     },
     {
-      id: 2,
+      id: '2',
       title: 'JS: Функции',
       description: 'Курс про функции в JavaScript',
     },
     {
-      id: 3,
+      id: '3',
       title: 'Fastify',
       description: 'Курс по фреймворку Fastify'
     },
@@ -35,18 +37,25 @@ const state = {
 app.get('/', (req, res) => res.view('src/views/index'));
 
 app.get('/users', (req, res) => {
-  res.view('src/views/users/index.pug', { users: state.users });
+  const { term } = req.query;
+  let currentUsers = state.users;
+
+  if (term) {
+    currentUsers = state.users.filter(({ name }) => name.includes(term.toLowerCase()));
+  }
+  res.view('src/views/users/index.pug', { users: currentUsers });
 });
 
 app.get('/users/new', (req, res) => res.view('src/views/users/new'));
 
 app.post('/users', (req, res) => {
-  const secretPass = 'xx' //<----------  TODO fix this
+  const secretPass = crypto(req.body.email);
 
   const user = {
+    id: genereateId(state.users.length),
     name: req.body.username.toLowerCase(),
     email: req.body.email.trim().toLowerCase(),
-    password:  secretPass,
+    password: secretPass,
   };
 
   state.users.push(user);
@@ -54,8 +63,13 @@ app.post('/users', (req, res) => {
   res.redirect('/users');
 });
 
-app.get('/users:id', (req, res) => {
-    res.send(`User ID: ${req.params.id}`);
+app.get('/users/:id', (req, res) => {
+    const user = state.users.find(({ id }) => id === req.params.id);
+
+    if (!user) {
+      res.status(404).send('User not found');
+    }
+    res.view('src/views/users/show.pug', { user });
 });
 
 app.get('/users:id/post/posts:postId', (req, res) => {
@@ -79,13 +93,13 @@ app.get('/courses', (req, res) => {
 app.get('/courses/new', (req, res) => res.view('src/views/courses/new'));
 
 app.get('/courses/:id', (req, res) => {
-  const course = state.courses.find(({id}) => id === Number(req.params.id));
+  const course = state.courses.find(({id}) => id === req.params.id);
   res.view('src/views/courses/show.pug', { course });
 });
 
 app.post('/courses', (req, res) => {
   const course = {
-    id: 1, //<------ToDo fix this
+    id: genereateId(state.courses.length), //<------ToDo fix this
     title: req.body.title,
     description: req.body.description,
   };
