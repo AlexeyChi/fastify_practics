@@ -1,0 +1,9 @@
+extends ../layouts/page.pug
+
+block content
+  .card.mt-5.shadow-sm.p-3.mb-5.bg-body-tertiary.rounded
+    .card-body
+      h4.card-title User #{user.id}
+      p.card-text User name - #{user.name}
+      p.card-text User email - #{user.email}
+      a.card-link(href='/users') Previous
