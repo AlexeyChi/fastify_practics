@@ -1,7 +1,8 @@
 extends ../layouts/page.pug
 
 block content
-  .card.mt-5
+  .card.mt-5.shadow-sm.p-3.mb-5.bg-body-tertiary.rounded(style="background-color: #d7fae3")
     .card-body
       h4.card-title #{course.title}
       p.card-text #{course.description}
+      a.card-link(href='/courses') Previous
