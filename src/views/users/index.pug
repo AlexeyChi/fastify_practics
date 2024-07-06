@@ -3,24 +3,33 @@ extends ../layouts/page.pug
 block header
   h2.my-3.font-monospace All users
   a.btn.btn-sm.btn-outline-primary(href='/users/new')
-    svg.bi.bi-person-fill-add(xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16")
-      path(d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0m-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0")
-      path(d="M2 13c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4")
-    span.ms-2 Add new user
+    .d-flex.align-items-center
+      svg.bi.bi-person-fill-add(xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16")
+        path(d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0m-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0")
+        path(d="M2 13c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4")
+        span.ms-2 Add new user
 block content
-  .row
-    .col-12.col-md
-      table.table.table-hover.table-striped.my-5
-          tr
-            th Id пользователя
-            th Имя пользователя
-            th Email пользователя
-            th Пароль пользователя
-          each user in users
+  form(action= '/users' method= 'get').my-5
+    .row
+      .col-12.col-md
+        .mb-3
+          label.form-label(for= 'filterTitle') Имя пользователя
+          input.form-control(id= 'filterTitle' name= 'term' value= term)
+        input(class='btn btn-primary' type='submit' value= 'Поиск')
+        .table-responsive
+          table.table.table-hover.table-striped.my-5.shadow-sm.p-3.mb-5.bg-body-tertiary.rounded
             tr
-              td
-                a.link-info.link-underline-opacity-0.link-underline-opacity-100-hover.link-dark.text-align-center(href=`/users`)= user.id
-              td
-                a.link-info.link-underline-opacity-0.link-underline-opacity-100-hover.link-dark(href=`/users`)= user.name
-              td= user.email
-              td= user.password
+              th Id
+              th Имя
+              th Email
+              th Пароль
+            if !users.length
+              p Ничего не найдено
+            each user in users
+              tr
+                td
+                  a.link-info.link-underline-opacity-0.link-underline-opacity-100-hover.link-dark.text-align-center(href=`/users/${user.id}`)= user.id
+                td
+                  a.link-info.link-underline-opacity-0.link-underline-opacity-100-hover.link-dark(href=`/users/${user.id}`)= user.name
+                td= user.email
+                td= user.password
