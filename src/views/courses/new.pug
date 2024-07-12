@@ -8,7 +8,7 @@ block content
       .col-12.col-md
         .card.my-4
           .card-body
-            form(action = '/courses' method = 'post')
+            form(action = route('courses') method = 'post')
                   .mb-3
                     label.form-label.font-monospace(for="title") Title:
                     input.form-control.bg-body-tertiary(type = 'text', name = 'title', value = title, id = 'title', required = true)

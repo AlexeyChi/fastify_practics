@@ -8,7 +8,7 @@ block content
       .col-12.col-md
         .card.my-4
           .card-body
-            form(action = '/users' method = 'post')
+            form(action = route('users') method = 'post')
                   .mb-3
                     label.form-label.font-monospace(for="username") Name:
                     input.form-control.bg-body-tertiary(type = 'text', name = 'name', id = 'name', value = name, required = true)

@@ -3,14 +3,23 @@ import pug from 'pug';
 import view from '@fastify/view';
 import formbody from '@fastify/formbody';
 import yup from 'yup';
+import { plugin as fastifyReverseRoutes } from 'fastify-reverse-routes';
 
 import { crypto, genereateId } from './utils.js';
 
-const app = fastify();
+const app = fastify({ exposeHeadRoutes: false });
 const port = 3000;
 
-await app.register(view, { engine: { pug } });
+const route = (name, placeholderValues) => app.reverse(name, placeholderValues);
+
+await app.register(view, {
+  engine: { pug },
+  defaultContext: {
+    route,
+  },
+});
 await app.register(formbody);
+await app.register(fastifyReverseRoutes);
 
 const state = {
   courses: [
@@ -35,9 +44,11 @@ const state = {
   ],
   };
 
-app.get('/', (req, res) => res.view('src/views/index'));
+//<--root road------------>
+app.get('/', { name: 'root' }, (req, res) => res.view('src/views/index'));
 
-app.get('/users', (req, res) => {
+//<--users road----------->
+app.get('/users', { name: 'users' }, (req, res) => {
   const { term } = req.query;
   let currentUsers = state.users;
 
@@ -47,7 +58,7 @@ app.get('/users', (req, res) => {
   res.view('src/views/users/index.pug', { users: currentUsers });
 });
 
-app.get('/users/new', (req, res) => res.view('src/views/users/new'));
+app.get('/users/new', { name: 'newUser' }, (req, res) => res.view('src/views/users/new'));
 
 app.post('/users', {
   attachValidation: true,
@@ -97,10 +108,10 @@ app.post('/users', {
 
   state.users.push(user);
 
-  res.redirect('/users');
+  res.redirect(app.reverse('users'));
 });
 
-app.get('/users/:id', (req, res) => {
+app.get('/users/:id', { name: 'user' }, (req, res) => {
     const user = state.users.find(({ id }) => id === req.params.id);
 
     if (!user) {
@@ -113,7 +124,9 @@ app.get('/users:id/post/posts:postId', (req, res) => {
     res.send(`User ID: ${req.params.id}, Post ID: ${req.params.postId}`);
 });
 
-app.get('/courses', (req, res) => {
+
+//<--courses road------------>
+app.get('/courses', {name: 'courses'}, (req, res) => {
   const { term } = req.query;
   let currentCurses = state.courses;
 
@@ -127,9 +140,9 @@ app.get('/courses', (req, res) => {
   res.view('src/views/courses/index.pug', data);
 });
 
-app.get('/courses/new', (req, res) => res.view('src/views/courses/new'));
+app.get('/courses/new', { name: 'newCourse' }, (req, res) => res.view('src/views/courses/new'));
 
-app.get('/courses/:id', (req, res) => {
+app.get('/courses/:id', { name: 'course' }, (req, res) => {
   const course = state.courses.find(({id}) => id === req.params.id);
   res.view('src/views/courses/show.pug', { course });
 });
@@ -179,7 +192,7 @@ app.post('/courses',{
 
   state.courses.push(course);
 
-  res.redirect('/courses');
+  res.redirect(app.reverse('courses'));
 });
 
 app.listen({ port }, () => {

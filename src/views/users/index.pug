@@ -2,7 +2,7 @@ extends ../layouts/page.pug
 
 block header
   h2.my-3.font-monospace All users
-  a.btn.btn-sm.btn-outline-primary(href='/users/new')
+  a.btn.btn-sm.btn-outline-primary(href=route('newUser'))
     .d-flex.align-items-center
       svg.bi.bi-person-fill-add(xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16")
         path(d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0m-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0")
@@ -28,8 +28,8 @@ block content
             each user in users
               tr
                 td
-                  a.link-info.link-underline-opacity-0.link-underline-opacity-100-hover.link-dark.text-align-center(href=`/users/${user.id}`)= user.id
+                  a.link-info.link-underline-opacity-0.link-underline-opacity-100-hover.link-dark.text-align-center(href=route('user', { id: user.id }))= user.id
                 td
-                  a.link-info.link-underline-opacity-0.link-underline-opacity-100-hover.link-dark(href=`/users/${user.id}`)= user.name
+                  a.link-info.link-underline-opacity-0.link-underline-opacity-100-hover.link-dark(href=route('user', { id: user.id }))= user.name
                 td= user.email
                 td= user.password
