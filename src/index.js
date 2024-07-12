@@ -2,6 +2,7 @@ import fastify from 'fastify';
 import pug from 'pug';
 import view from '@fastify/view';
 import formbody from '@fastify/formbody';
+import yup from 'yup';
 
 import { crypto, genereateId } from './utils.js';
 
@@ -48,13 +49,49 @@ app.get('/users', (req, res) => {
 
 app.get('/users/new', (req, res) => res.view('src/views/users/new'));
 
-app.post('/users', (req, res) => {
-  const secretPass = crypto(req.body.email);
+app.post('/users', {
+  attachValidation: true,
+  schema: {
+    body: yup.object({
+      name: yup.string().min(2, 'Name must contain at last 2 characters'),
+      email: yup.string().email(),
+      password: yup.string().min(5),
+      passwordConfirmaton: yup.string().min(5),
+    }),
+  },
+  validatorCompiler: ({ schema, method, url, hhtpPath }) => (data)  => {
+    if (data.password !== data.passwordConfirmaton) {
+      return {
+        error: Error('Password confirmation isn\'t equal the password')
+      };
+    }
+    try {
+      const result = schema.validateSync(data);
+      return { value: result };
+    } catch (err) {
+      return { error: err };
+    }
+  },
+}, (req, res) => {
+  const { name, email, password, passwordConfirmaton } = req.body;
+  const secretPass = crypto(password);
+
+  if (req.validationError) {
+    const data = {
+      name,
+      email,
+      password,
+      passwordConfirmaton,
+      error: req.validationError
+    };
+    res.view('src/views/users/new', data);
+    return;
+  }
 
   const user = {
     id: genereateId(state.users.length),
-    name: req.body.username.toLowerCase(),
-    email: req.body.email.trim().toLowerCase(),
+    name: name.toLowerCase(),
+    email: email.trim().toLowerCase(),
     password: secretPass,
   };
 
@@ -97,9 +134,45 @@ app.get('/courses/:id', (req, res) => {
   res.view('src/views/courses/show.pug', { course });
 });
 
-app.post('/courses', (req, res) => {
+app.post('/courses',{
+  attachValidation: true,
+  schema: {
+    body: yup.object({
+      title: yup.string().min(2, 'Title must contain at last 2 characters'),
+      description: yup.string().min(10, 'Description must contain at last 10 characters'),
+    }),
+  },
+  validatorCompiler: ({schema, method, url, hhtpPath }) => (data) => {
+    const courseTitles = state.courses.map(({ title }) => title);
+
+    if (courseTitles.includes(data.title)) {
+      return {
+        error: Error('Course title isn\'t unique')
+      };
+    }
+    try {
+      const result = schema.validateSync(data);
+      return { value: result };
+    } catch (err) {
+      return { error: err };
+    }
+  }
+}, (req, res) => {
+  const { title, description } = req.body;
+
+  if (req.validationError) {
+    const data = {
+      title,
+      description,
+      error: req.validationError,
+    };
+
+    res.view('src/views/courses/new', data);
+    return;
+  }
+
   const course = {
-    id: genereateId(state.courses.length), //<------ToDo fix this
+    id: genereateId(state.courses.length),
     title: req.body.title,
     description: req.body.description,
   };
@@ -108,7 +181,6 @@ app.post('/courses', (req, res) => {
 
   res.redirect('/courses');
 });
-
 
 app.listen({ port }, () => {
   console.log(`Example app listening on port ${port}`);
