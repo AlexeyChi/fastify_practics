@@ -10,9 +10,14 @@ block content
           .card-body
             form(action = '/courses' method = 'post')
                   .mb-3
-                    label.form-label(for="title") Title:
-                    input.form-control(type = 'text', name = 'title', id = 'title', required = true)
-                  .mb-3
-                    label.form-label(for="description") Description:
-                    textarea.form-control(type = 'text', name = 'description', id = 'description', required = true)
-                  button.btn.btn-primary(type="submit") Add 
+                    label.form-label.font-monospace(for="title") Title:
+                    input.form-control.bg-body-tertiary(type = 'text', name = 'title', value = title, id = 'title', required = true)
+                  .mb-1
+                    label.form-label.font-monospace(for="description") Description:
+                    textarea.form-control.bg-body-tertiary(type = 'text', name = 'description', id = 'description', required = true) #{description}
+                  .mb-1
+                    if error
+                      p.p-1.alert.alert-danger(role="alert")= error.message
+                    else
+                      p &nbsp;
+                  button.btn.btn-primary.px-3.font-monospace(type="submit") Add 

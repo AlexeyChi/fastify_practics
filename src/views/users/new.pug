@@ -10,15 +10,20 @@ block content
           .card-body
             form(action = '/users' method = 'post')
                   .mb-3
-                    label.form-label(for="username") Name:
-                    input.form-control(type = 'text', name = 'username', id = 'username', required = true)
+                    label.form-label.font-monospace(for="username") Name:
+                    input.form-control.bg-body-tertiary(type = 'text', name = 'name', id = 'name', value = name, required = true)
                   .mb-3
-                    label.form-label(for="email") Email:
-                    input.form-control(type = 'email', name = 'email', placeholder = 'your.email@gmail.com', id = 'email', required = true)
+                    label.form-label.font-monospace(for="email") Email:
+                    input.form-control.bg-body-tertiary(type = 'email', name = 'email', value = email, placeholder = 'your.email@gmail.com', id = 'email', required = true)
                   .mb-3
-                    label.form-label(for="password") Password:
-                    input.form-control(type = 'password', name = 'password', id = 'password', required = true)
-                  .mb-3
-                    label.form-label(for="confirmPassword") confirmPassword:
-                    input.form-control(type = 'password', name = 'confirmPassword', id = 'confirmPassword',, required = true)
-                  button.btn.btn-primary(type="submit") Add 
+                    label.form-label.font-monospace(for="password") Password:
+                    input.form-control.bg-body-tertiary(type = 'password', name = 'password', value = password, id = 'password', required = true)
+                  .mb-1
+                    label.form-label.font-monospace(for="passwordConfirmaton") Password confirmaton:
+                    input.form-control.bg-body-tertiary(type = 'password', name = 'passwordConfirmaton', value = passwordConfirmaton, id = 'confirmPassword', required = true)
+                  .mb-1
+                    if error
+                      p.p-1.alert.alert-danger(role="alert")= error.message
+                    else
+                      p &nbsp;
+                  button.btn.btn-primary.px-3.font-monospace(type="submit") Add
