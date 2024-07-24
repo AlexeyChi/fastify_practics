@@ -2,7 +2,7 @@ extends ../layouts/page.pug
 
 block header
   h2.my-3.font-monospace All courses
-  a.btn.btn-sm.btn-outline-primary(href=route('newCourse'))
+  a.btn.btn-sm.btn-outline-success(href=route('newCourse'))
     .d-flex.align-items-center
       svg.bi.bi-journal-plus(xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16")
         path(fill-rule="evenodd" d="M8 5.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V10a.5.5 0 0 1-1 0V8.5H6a.5.5 0 0 1 0-1h1.5V6a.5.5 0 0 1 .5-.5")
@@ -10,25 +10,36 @@ block header
         path(d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1z")
         span.ms-2 Add new course
 block content
-  form(action= '/courses' method= 'get').my-5
+  form(action=route('courses') method='get').my-5
     .row
       .col-12.col-md
         .mb-3
-          label.form-label(for= 'filterTitle') Название курса
-          input.form-control(id= 'filterTitle' name= 'term' value= term)
-        input(class='btn btn-primary' type='submit' value= 'Поиск')
+          label.form-label(for='filterTitle') Название курса
+          input.form-control(id='filterTitle' name='description' value=description)
+        input(class='btn btn-success' type='submit' value='Поиск')
         .table-responsive
           table.table.table-hover.table-striped.my-5.shadow-sm.p-3.mb-5.bg-body-tertiary.rounded
               tr
-                th Id
                 th Название
                 th Описание
+                th Действие
               if !courses.length
                 p Ничего не найдено
+              if error
+                p= error
               each course in courses
-                tr
-                  td
-                    a.link-info.link-underline-opacity-0.link-underline-opacity-100-hover.link-dark.text-align-center(href=route('course', { id: course.id }))= course.id
+                tr.align-middle
                   td
                     a.link-info.link-underline-opacity-0.link-underline-opacity-100-hover.link-dark(href=route('course', { id: course.id }))= course.title
-                  td= course.description
+                  td
+                    a.link-info.link-underline-opacity-0.link-underline-opacity-100-hover.link-dark(href=route('course', { id: course.id }))= course.description
+
+                  td
+                    .d-flex.align-itens-center
+                      a.btn.btn-outline-success.py-0.me-1(href=route('editCourse', { id: course.id }), style="height: 26px")
+                        svg.bi.bi-pen.my-1(xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16")
+                          path(d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z")
+                      form(action=route('deleteCourse', { id: course.id }), method="post")
+                        input(name="_method" type="hidden" value="DELETE")
+                        input.py-0(type='submit', value="X", class="btn btn-outline-danger", style="width: 42px")
+

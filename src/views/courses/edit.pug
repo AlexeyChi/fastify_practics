@@ -2,21 +2,21 @@ extends ../layouts/page.pug
 
 block content
   .container.d-flex.flex-column.justify-content-center
-    h2.mt-3.mb-0.px-3.text-center.font-monospace Add new course
+    h2.mt-3.mb-0.px-3.text-center.font-monospace Edit course
     .row.justify-content-center
       .col-12.col-md-8.col-xxl-6
         .card.my-4.shadow-sm
           .card-body
-            form(action=route('courses') method = 'post')
+            form(action=route('course', { id: course.id }) method='post')
               .mb-3
                 label.form-label.font-monospace(for="title") Title:
-                input.form-control.bg-body-tertiary(type = 'text', name = 'title', id = 'title', value = title, required = true)
+                input.form-control.bg-body-tertiary(type = 'text', name = 'title', value = course.title, id = 'title', required = true)
               .mb-1
                 label.form-label.font-monospace(for="description") Description:
-                textarea.form-control.bg-body-tertiary(type = 'text', name = 'description', id = 'description', required = true) #{description}
+                textarea.form-control.bg-body-tertiary(type = 'text', name = 'description', id = 'description', required = true) #{course.description}
               .mb-1
                 if error
                   p.p-1.alert.alert-danger(role="alert")= error.message
                 else
                   p &nbsp;
-              input.btn.btn-success.px-3.font-monospace(type="submit" value='Add')
+              input.btn.btn-success.px-3.font-monospace(type="submit" value='Save')
