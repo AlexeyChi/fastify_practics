@@ -1,0 +1,28 @@
+extends ../layouts/page.pug
+
+block content
+  h2.mt-3.mb-0.px-3.text-center.font-monospace Edit user
+  .container
+    .row.justify-content-center
+      .col-12.col-md-8.col-xxl-6
+        .card.my-4
+          .card-body
+            form(action=route('user', { id: user.id }) method='post')
+                  .mb-3
+                    label.form-label.font-monospace(for="username") Name:
+                    input.form-control.bg-body-tertiary(type = 'text', name = 'name', id = 'name', value = user.name, required = true)
+                  .mb-3
+                    label.form-label.font-monospace(for="email") Email:
+                    input.form-control.bg-body-tertiary(type = 'email', name = 'email', value = user.email, placeholder = 'your.email@gmail.com', id = 'email', required = true)
+                  .mb-3
+                    label.form-label.font-monospace(for="password") Password:
+                    input.form-control.bg-body-tertiary(type = 'password', name = 'password', value = user.password, id = 'password', required = true)
+                  .mb-1
+                    label.form-label.font-monospace(for="passwordConfirmaton") Password confirmaton:
+                    input.form-control.bg-body-tertiary(type = 'password', name = 'passwordConfirmaton', value = user.password, id = 'confirmPassword', required = true)
+                  .mb-1
+                    if error
+                      p.p-1.alert.alert-danger(role="alert")= error.message
+                    else
+                      p &nbsp;
+                  input.btn.btn-success.px-3.font-monospace(type="submit" value='Save')

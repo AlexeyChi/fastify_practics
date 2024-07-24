@@ -1,9 +1,17 @@
 extends ../layouts/page.pug
 
 block content
-  .card.mt-5.shadow-sm.p-3.mb-5.bg-body-tertiary.rounded
-    .card-body
-      h4.card-title User #{user.id}
-      p.card-text User name - #{user.name}
-      p.card-text User email - #{user.email}
-      a.card-link(href=route('users')) Previous
+  .row.justify-content-center
+    .col-12.col-md-10.col-xxl-8
+      .card.mt-5.shadow.p-3.mb-5.bg-body-tertiary.border.border-success-subtle.rounded
+        .card-body
+          h4.card-title.font-monospace User #{user.id}
+          div.my-3.p-2.bg-success-subtle.text-success-emphasis.rounded
+            p.card-text.font-monospace User name - #{user.name}
+            p.card-text.font-monospace User email - #{user.email}
+          .d-flex.px-3.flex-wrap.align-items-center.justify-content-between
+            .d-flex.flex-wrap.gap-2.align-items-center
+              a.card-link.link-secondary.link-offset-2.link-underline-opacity-10.link-underline-opacity-100-hover.mx-0.font-monospace(href=route('users')) Previous
+              a.card-link.link-secondary.link-offset-2.link-underline-opacity-10.link-underline-opacity-100-hover.mx-0.font-monospace(href=route('editUser', { id: user.id })) Edit
+            form(action=route('deleteUser', { id: user.id }), method="post")
+              input(type='submit', value="Delete", class="btn btn-outline-secondary")
