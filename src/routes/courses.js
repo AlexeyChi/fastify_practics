@@ -176,7 +176,7 @@ export default (app, db) => {
   });
 
   // <--- Delete course --->
-  app.post('/delete/:id', {name: 'deleteCourse' }, (req, res) => {
+  app.post('/courses/delete/:id', {name: 'deleteCourse' }, (req, res) => {
     const { id } = req.params;
 
     const stmt = db.prepare('DELETE FROM courses WHERE id = ?');

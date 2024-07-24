@@ -18,11 +18,11 @@ block content
           input.form-control(id='filterTitle' name='description' value=description)
         input(class='btn btn-success' type='submit' value='Поиск')
         .table-responsive
-          table.table.table-hover.table-striped.my-5.shadow-sm.p-3.mb-5.bg-body-tertiary.rounded
+          table.table.table-hover.table-striped.my-5.shadow-sm.p-3.mb-5.bg-body-success.rounded
               tr
-                th Название
-                th Описание
-                th Действие
+                th Name
+                th Description
+                th Action
               if !courses.length
                 p Ничего не найдено
               if error
