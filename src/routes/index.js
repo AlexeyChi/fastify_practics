@@ -8,4 +8,4 @@ const controllers = [
   users,
 ];
 
-export default (app, state) => controllers.forEach((f) => f(app, state));
+export default (app, db) => controllers.forEach((f) => f(app, db));
