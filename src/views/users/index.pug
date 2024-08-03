@@ -13,8 +13,8 @@ block content
     .row
       .col-12.col-md
         .mb-3
-          label.form-label(for= 'filterTitle') Имя пользователя
-          input.form-control(id= 'filterTitle' name= 'term' value= term)
+          label.form-label(for='filterTitle') Имя пользователя
+          input.form-control(id='filterTitle' name='name' value= name)
         input(class='btn btn-success' type='submit' value= 'Поиск')
         .table-responsive
           table.table.table-hover.table-striped.my-5.shadow-sm.p-3.mb-5.bg-body-tertiary.rounded
@@ -25,6 +25,8 @@ block content
               th Action
             if !users.length
               p Ничего не найдено
+            if error
+              p= error
             each user in users
               tr
                 td

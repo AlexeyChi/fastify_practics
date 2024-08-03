@@ -1,6 +1,11 @@
 extends layouts/page.pug
 
+block header
+  if username
+    h3.h1.mt-3.px-3.font-monospace Hi, #{username}!!!
+  else
+    h1.mt-3.px-3.font-monospace Hi there!!!
 block content
   main.container.mt-5
-block header
-    h1.mt-3.px-3.font-monospace Hi there!!!
+  if !visited
+    p.px-3.bg-warning-subtle.rounded Это сообщение показывается только один раз. Если вы хотите увидеть его снова, сотрите куки

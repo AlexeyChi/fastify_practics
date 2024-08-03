@@ -1,0 +1,22 @@
+extends ../layouts/page.pug
+
+block content
+  .d-flex.align-items-center
+    .container
+      .row.justify-content-center
+        .col-12.col-md-8.col-xxl-6
+          .card.my-4
+            .card-body
+              form(action='/sessions', method='post')
+                h2.mb-3.mb-0.px-3.text-center.font-monospace Log in
+                .form-floating.mb-3
+                  input.form-control(type="text", name='name', value=name, id="floatingInput", placeholder="name@example.com", required = true)
+                  label(for="floatingInput") Name
+                .form-floating.mb-1
+                  input.form-control(type="password",  name='password', value=password, id="floatingPassword" placeholder="Password", required = true)
+                  label(for="floatingPassword") Password
+                if error
+                  p.p-1.alert.alert-danger(role="alert")= error
+                else
+                  p &nbsp;
+                input.btn.btn-success.px-3.font-monospace(type="submit" value='Log in')
