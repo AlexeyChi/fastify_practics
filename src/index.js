@@ -3,6 +3,8 @@ import pug from 'pug';
 import view from '@fastify/view';
 import formbody from '@fastify/formbody';
 import { plugin as fastifyReverseRoutes } from 'fastify-reverse-routes';
+import fastifyCookie from '@fastify/cookie';
+import session from '@fastify/session';
 import sqlite3 from 'sqlite3';
 
 import addRoutes from './routes/index.js';
@@ -67,6 +69,13 @@ export default async () => {
       route(name, placeholderValues) {
         return app.reverse(name, placeholderValues);
       },
+    },
+  });
+  await app.register(fastifyCookie);
+  await app.register(session, {
+    secret: 'a secret with minimum length of 32 characters',
+    cookie: {
+      secure: false,
     },
   });
 
