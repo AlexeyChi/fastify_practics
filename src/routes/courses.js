@@ -2,8 +2,10 @@ import yup from 'yup';
 
 export default (app, db) => {
   // <--- View courses list --->
-  app.get('/courses', {name: 'courses'}, (req, res) => {
+  app.get('/courses', { name: 'courses' }, (req, res) => {
     const filterOptions = req.query;
+    const { username } = req.session;
+
     const query = filterOptions.description
       ? `SELECT * FROM courses WHERE description LIKE '%${filterOptions.description}%'`
       : `SELECT * FROM courses`;
@@ -16,8 +18,9 @@ export default (app, db) => {
       }
       const templateData = {
         courses: data,
+        username,
       };
-      res.view('src/views/courses/index.pug', templateData);
+      res.view('src/views/courses/index', templateData);
     });
   });
     
@@ -28,17 +31,21 @@ export default (app, db) => {
   app.get('/courses/:id', { name: 'course' }, (req, res) => {
     const { id } = req.params;
 
-    db.get(`SELECT * FROM courses WHERE id = ${id}`, (error, data) => {
+    db.get(`SELECT * FROM courses WHERE id = ${id}`, (err, data) => {
+      if (err) {
+        console.log(err);
+        res.view('src/views/courses/index', { error: err });
+        return;
+      }
       const templateData = {
         course: data,
         error,
       };
-      console.log(templateData)
       res.view('src/views/courses/show.pug', templateData);
     });
   });
 
-  // <--- Form for creating a new course --->
+  // <--- Creating a new course --->
   app.post('/courses', {
     attachValidation: true,
     schema: {

@@ -1,13 +1,15 @@
-import reverse from 'fastify-reverse-routes';
 import yup from 'yup';
+
+import { encrypt } from '../utils.js';
 
 export default (app, db) => {
   // <--- View users list --->
   app.get('/users', { name: 'users' }, (req, res) => {
     const filterOptions = req.query;
+    const { username } = req.session;
 
     const query = filterOptions.name
-      ? `SELECT * FROM users WHERE email LIKE ${filterOptions.name}`
+      ? `SELECT * FROM users WHERE name LIKE '%${filterOptions.name}%'`
       : 'SELECT * FROM users';
 
     db.all(query, (err, data) => {
@@ -18,16 +20,17 @@ export default (app, db) => {
       }
       const templateData = {
         users: data,
+        username,
       };
 
-      res.view('src/views/users/index.pug', templateData);
+      res.view('src/views/users/index', templateData);
     });
   });
   
   // <--- Form for adding a new user --->
   app.get('/users/new', { name: 'newUser' }, (req, res) => res.view('src/views/users/new'));
   
-  // <--- Form for creating new user --->
+  // <--- Creating new user --->
   app.post('/users', {
     attachValidation: true,
     schema: {
@@ -65,8 +68,13 @@ export default (app, db) => {
       res.view('src/views/users/new', data);
       return;
     }
-  
-    const user = { name, email, password };
+
+    const encriptedPassword = encrypt(password);
+    const user = {
+      name,
+      email,
+      password: encriptedPassword,
+    };
 
     const stmt = db.prepare('INSERT INTO users(name, email, password) VALUES (?, ?, ?)');
     return new Promise((resolve, reject) => {
