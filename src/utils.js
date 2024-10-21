@@ -1,5 +1,7 @@
 import CryptoJS from 'crypto-js';
 
-export const crypto = (password) => CryptoJS.SHA256(password);
+const key = 'secret phrase';
 
-export const genereateId = (n) => (n + 1).toString();
+export const encrypt = (password) => CryptoJS.AES.encrypt(password, key).toString();
+
+export const decrypt = (hash) => CryptoJS.AES.decrypt(hash, key).toString(CryptoJS.enc.Utf8);
