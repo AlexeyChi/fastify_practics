@@ -1,4 +1,5 @@
 import build from '../src/index.js';
+import 'dotenv/config';
 
 const app = await build();
 
