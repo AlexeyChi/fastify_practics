@@ -4,6 +4,7 @@ export default (app) => {
     const visited = req.cookies.visited;
     const { username } = req.session;
     const templateData = {
+      flash: res.flash(),
       visited,
       username,
     };

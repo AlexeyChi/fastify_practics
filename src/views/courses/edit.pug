@@ -13,7 +13,7 @@ block content
                 input.form-control.bg-body-tertiary(type = 'text', name = 'title', value = course.title, id = 'title', required = true)
               .mb-1
                 label.form-label.font-monospace(for="description") Description:
-                textarea.form-control.bg-body-tertiary(type = 'text', name = 'description', id = 'description', required = true) #{course.description}
+                textarea.form-control.bg-body-tertiary(name = 'description', id = 'description', required = true) #{course.description}
               .mb-1
                 if error
                   p.p-1.alert.alert-danger(role="alert")= error.message

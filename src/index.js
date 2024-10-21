@@ -4,10 +4,12 @@ import view from '@fastify/view';
 import formbody from '@fastify/formbody';
 import { plugin as fastifyReverseRoutes } from 'fastify-reverse-routes';
 import fastifyCookie from '@fastify/cookie';
-import session from '@fastify/session';
+import fastifySession from '@fastify/session';
+import fastifyFlash from '@fastify/flash';
 import sqlite3 from 'sqlite3';
 
 import addRoutes from './routes/index.js';
+import { encrypt } from './utils.js';
 
 export default async () => {
   const app = fastify({ exposeHeadRoutes: false, logger: true });
@@ -46,8 +48,10 @@ export default async () => {
 
     stmtCourses.finalize();
 
+    // const adminPass = encrypt('admin');
+
     const users = [
-      { id: '1', name: 'admin', email: 'admin@example.com', password: 'admin' },
+      { id: '1', name: 'admin', email: 'admin@example.com', password: encrypt('admin') },
     ];
 
     const stmtUsers = db.prepare(`INSERT INTO users VALUES (?, ?, ?, ?)`);
@@ -57,10 +61,10 @@ export default async () => {
     })
 
     stmtUsers.finalize();
-  }
+  };
 
   prepareDatabase();
-    
+
   await app.register(fastifyReverseRoutes);
   await app.register(formbody);
   await app.register(view, {
@@ -72,12 +76,27 @@ export default async () => {
     },
   });
   await app.register(fastifyCookie);
-  await app.register(session, {
+  await app.register(fastifySession, {
     secret: 'a secret with minimum length of 32 characters',
     cookie: {
       secure: false,
     },
   });
+  await app.register(fastifyFlash);
+
+  const hideFlash = () => {
+    const flashInfoElement = document.querySelector('.alert-dismissible');
+  
+    if (flashInfoElement) {
+      const closeBtn = document.querySelector('.btn-close');
+    
+      closeBtn.addEventListener('click', () => {
+        flashInfoElement.classList.remove('show');
+        flashInfoElement.classList.add('hide');
+      })
+    }
+    return;
+  };
 
   addRoutes(app, db);
   return app;

@@ -1,4 +1,4 @@
-import { decrypt, encrypt } from '../utils.js';
+import { decrypt } from '../utils.js';
 
 export default (app, db) => {
   //<--- Sing up form --->
@@ -10,7 +10,7 @@ export default (app, db) => {
   app.post('/sessions', (req, res) => {
     const { name, password } = req.body;
 
-    db.all(`SELECT * FROM users WHERE name = ?`, [name], (err, data) => {      
+    db.all(`SELECT * FROM users WHERE name = ?`, [name], (err, data) => {
       if (err) {
         console.error(err);
         res.view('src/views/sessions/new', { error: err });
@@ -23,6 +23,7 @@ export default (app, db) => {
         res.view('src/views/sessions/new', { error: message });
         return;
       }
+      req.flash('success', `Welcome back ${user.name}`);
       req.session.username = user.name;
       res.redirect(app.reverse('root', {}));
     });

@@ -28,7 +28,14 @@ export default (app, db) => {
   });
   
   // <--- Form for adding a new user --->
-  app.get('/users/new', { name: 'newUser' }, (req, res) => res.view('src/views/users/new'));
+  app.get('/users/new', { name: 'newUser' }, (req, res) => {
+    const { username } = req.session;
+    const templateData = {
+      flash: res.flash(),
+      username,
+    };
+
+    res.view('src/views/users/new', templateData)});
   
   // <--- Creating new user --->
   app.post('/users', {
@@ -63,7 +70,7 @@ export default (app, db) => {
         email,
         password,
         passwordConfirmaton,
-        error: req.validationError
+        error: req.validationError,
       };
       res.view('src/views/users/new', data);
       return;
@@ -81,11 +88,13 @@ export default (app, db) => {
       stmt.run([user.name, user.email, user.password], (err) => {
         if (err) {
           const templateData = {
+            flas: res.flash(),
             name,
             email,
             password,
             error: err,
           };
+          res.flash('success', 'New user successfully added');
           res.view('src/views/users/new', templateData);
           reject();
         }
@@ -98,6 +107,7 @@ export default (app, db) => {
   // <--- View uses by ID --->
   app.get('/users/:id', { name: 'user' }, (req, res) => {
     const { id } = req.params;
+    const { username } = req.session;
 
     db.get(`SELECT * FROM users WHERE id = ${id}`, (err, data) => {
       if (err) {
@@ -107,6 +117,8 @@ export default (app, db) => {
       }
       const templateData = {
         user: data,
+        flash: res.flash(),
+        username,
       };
       res.view('src/views/users/show', templateData);
     });
@@ -115,12 +127,20 @@ export default (app, db) => {
   // <--- User editing form --->
   app.get('/users/:id/edit', { name: 'editUser' }, (req, res) => {
     const { id } = req.params;
+    const { username } = req.session;
+
     db.get(`SELECT * FROM users WHERE id = ${id}`, (err, data) => {
       if (err) {
         res.redirect(app.reverse('users'));
         return;
       }
-      res.view('src/views/users/edit', { user: data });
+      const templateData = {
+        user: data,
+        flash: res.flash(),
+        username,
+      };
+
+      res.view('src/views/users/edit', templateData);
     });
   });
 
